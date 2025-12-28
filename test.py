@@ -1,6 +1,7 @@
 import asyncio
 import httpx
 import json
+from insert import insert_abyss_team
 from wrapper import YSHelperWrapper
 
 
@@ -45,8 +46,7 @@ async def main():
 
     
     for team in teams:
-        print(team["roles"])
-        print() 
+        insert_abyss_team(team)
 
 
 if __name__ == "__main__":

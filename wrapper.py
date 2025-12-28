@@ -1,5 +1,6 @@
 import httpx
 import asyncio
+import hashlib
 from models import AbyssTeam, Character
 from typing import List
 
@@ -116,16 +117,16 @@ class YSHelperWrapper:
       "https://inews.gtimg.com/om_bt/OWLdJcMIIecD4D86Uy5s96yjjduxk1tjOIqjJxTsv7WjUAA/0": "Chiori"
     }
 
-    def __init__(self, lang="en", version=""):
+    def __init__(self, lang="en"):
         self.lang = lang
-        self.version = version
+        self.version = ""
 
     async def fetch_data(self, star="all", role="all"):
         params = {
             "star": star,
             "role": role,
             "lang": self.lang,
-            "version": self.version
+            "version": ""
         }
 
         headers = {
@@ -164,14 +165,23 @@ class YSHelperWrapper:
             "down_use_num": team.get("down_use_num")
         }
         
+    def generate_team_key(self, members: List[Character], version: str) -> str:
+        member_names = [member.name for member in members]
+        team_str = "-".join(sorted(member_names)) + f"-{version}"
+        
+        return hashlib.sha256(team_str.encode("utf-8")).hexdigest()
+        
+        
     def map_team_to_model(self, team) -> AbyssTeam:
         members = [Character(name = self.AVATAR_MAP.get(char["avatar"], "Unknown"), rarity = char["star"], icon = char["avatar"]) for char in team.get("role", [])]
         
-        return AbyssTeam(
+        return AbyssTeam (
+            version=self.version,
             members=members,
             usage_rate_top = team.get("up_use"),
             usage_rate_bottom = team.get("down_use"),
             usage_total = team.get("use_rate"),
+            team_key = self.generate_team_key(members, self.version)
         )
 
     def get_abyss_teams(self, raw_teams) -> List[AbyssTeam]:
@@ -192,6 +202,11 @@ class YSHelperWrapper:
                         teams.append(t)
       return teams
 
+    def get_current_version(self, data):
+        history = data["history_list"]
+        recent = history[0]
+        return recent["title"]
+    
     def extract_dict(self, data):
         for c in data["has_list"]:
 
@@ -213,6 +228,8 @@ class YSHelperWrapper:
     async def get_teams(self):
         """Fetch and normalize in one call"""
         raw_data = await self.fetch_data()
+        
         #self.extract_dict(raw_data)
+        self.version = self.get_current_version(raw_data)
         return self.normalize_response(raw_data)
       

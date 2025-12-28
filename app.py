@@ -4,6 +4,7 @@ import asyncio
 import httpx
 import json
 from wrapper import YSHelperWrapper
+from get import get_abyss_teams
 
 app = FastAPI(
   title="Genshin Team Recommender Wrapper",
@@ -27,9 +28,8 @@ async def get_teams():
   data = await wrapper.get_teams()
   return data
 
-@app.get("/teams/by-boss/{boss_id}", response_model=list[AbyssTeam])
-def get_teams_by_boss(boss_id: str):
-  data = []
-  filtered = [team for team in data if team.get("boss_id") == boss_id]
-  return filtered
+@app.get("/db-test")
+def get_teams_by_version(version: str = None):
+  data = get_abyss_teams(version)
+  return data
 

@@ -1,8 +1,5 @@
 from fastapi import FastAPI, HTTPException
 from models import Character, AbyssTeam
-import asyncio
-import httpx
-import json
 from wrapper import YSHelperWrapper
 from get import get_abyss_teams
 
@@ -12,7 +9,7 @@ app = FastAPI(
   description="Backend wrapper normalizing YSHelper data"
 )
   
-@app.get("/health")
+@app.get("/")
 def health_check():
   return {"status":"ok"}
 

@@ -1,7 +1,7 @@
 import httpx
 import asyncio
 import hashlib
-from models import AbyssTeam, Character
+from app.models import AbyssTeam, Character
 from typing import List
 
 class YSHelperWrapper:

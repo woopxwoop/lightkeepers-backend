@@ -1,4 +1,4 @@
-from db import supabase
+from app.db import supabase
 
 def get_abyss_teams(version: str = None):
   query = supabase.table("abyss_teams").select("*")

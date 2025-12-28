@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
-from models import Character, AbyssTeam
-from wrapper import YSHelperWrapper
-from get import get_abyss_teams
+from app.models import Character, AbyssTeam
+from app.wrapper import YSHelperWrapper
+from app.get import get_abyss_teams
 
 app = FastAPI(
   title="Genshin Team Recommender Wrapper",

@@ -1,4 +1,4 @@
-from db import supabase
+from app.db import supabase
 
 def test_connection():
   result = supabase.table("abyss_teams").select("*").limit(1).execute()

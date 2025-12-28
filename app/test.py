@@ -1,8 +1,8 @@
 import asyncio
 import httpx
 import json
-from insert import insert_abyss_team
-from wrapper import YSHelperWrapper
+from app.insert import insert_abyss_team
+from app.wrapper import YSHelperWrapper
 
 
 

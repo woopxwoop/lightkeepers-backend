@@ -11,7 +11,7 @@ app = FastAPI(
 )
 
 origins = [
-  "https://woopxwoop.github.io/portfolio/",
+  "https://woopxwoop.github.io",
   "http://localhost",
   "http://localhost:8080",
   "http://127.0.0.1:5501",

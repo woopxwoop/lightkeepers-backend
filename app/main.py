@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from app.cron import update_abyss_teams, update_character_mapping, update_versions
 from app.models import Character, AbyssTeam
 from app.wrapper import YSHelperWrapper
 from app.get import get_abyss_teams
@@ -46,3 +47,17 @@ def get_teams_by_version(version: str = None):
   data = get_abyss_teams(version)
   return data
 
+@app.get("/cron/abyss")
+async def cron_job_abyss():
+  await update_abyss_teams()
+  return {"status": "ok"}
+
+@app.get("/cron/characters")
+async def cron_job_characters():
+  await update_character_mapping()
+  return {"status": "ok"}
+
+@app.get("/cron/versions")
+async def cron_job_versions():
+  await update_versions()
+  return {"status": "ok"}

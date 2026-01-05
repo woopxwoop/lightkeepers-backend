@@ -10,3 +10,16 @@ def insert_abyss_team(team: AbyssTeam):
   
   return response
 
+def insert_character_mapping(url: str, character_name: str):
+  response = (
+    supabase.table("url_to_character_mapping").insert({"url": url, "character_name": character_name}).execute()
+  )
+  
+  return response
+
+def insert_version(version: str, version_number: str):
+  response = (
+    supabase.table("versions").insert({"version": version, "version_number": version_number}).execute()
+  )
+  
+  return response

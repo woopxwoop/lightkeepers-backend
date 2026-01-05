@@ -7,7 +7,7 @@ class Character(BaseModel):
   icon: str | None = None
  
 class AbyssTeam(BaseModel):
-  version: str
+  version_number: int
   members: List[Character]
   usage_rate_top: float | None = None
   usage_rate_bottom: float | None = None

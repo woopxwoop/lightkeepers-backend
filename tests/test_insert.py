@@ -1,10 +1,9 @@
 import asyncio
 import httpx
 import json
+import pytest
 from app.insert import insert_abyss_team
 from app.wrapper import YSHelperWrapper
-
-
 
 URL = "https://api.yshelper.com/ys/getAbyssRank.php"
 
@@ -40,18 +39,13 @@ def fetch_abyss_rank():
     except httpx.HTTPStatusError as e:
         print(f"Bad status code: {e.response.status_code} - {e.response.text}")
 
-async def main():
+@pytest.mark.asyncio
+async def insert_characters_abyss():
     wrapper = YSHelperWrapper()
-    teams = await wrapper.get_teams()
+    characters = ["Ambor", "Kaeya"]
+    for character in characters:
+        teams = await wrapper.get_teams(role = character)
+        for team in teams:
+            insert_abyss_team(team)
 
-    
-    for team in teams:
-        insert_abyss_team(team)
 
-
-if __name__ == "__main__":
-
-    #fetch_abyss_rank()
-    
-    asyncio.run(main())
-    

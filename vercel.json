@@ -13,19 +13,7 @@
   ],
   "crons": [
     {
-      "path": "/cron/abyss",
-      "schedule": "0 0 16-17 * *"
-    },
-    {
-      "path": "/cron/abyss",
-      "schedule": "0 0 1-15/7,18-31/7 * *"
-    },
-    {
-      "path": "/cron/characters",
-      "schedule": "0 0 * * *"
-    },
-    {
-      "path": "/cron/versions",
+      "path": "/cron/daily",
       "schedule": "0 0 * * *"
     }
   ]

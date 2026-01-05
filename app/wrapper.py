@@ -134,5 +134,6 @@ class YSHelperWrapper:
         if self.character_mapping is None:
             self.character_mapping = await get_character_mapping()
         
-    def get_character_list(self):
+    async def get_character_list(self):
+        await self.get_mapping_cached()
         return self.character_mapping.values()

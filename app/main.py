@@ -47,17 +47,9 @@ def get_teams_by_version(version: str = None):
   data = get_abyss_teams(version)
   return data
 
-@app.get("/cron/abyss")
-async def cron_job_abyss():
-  await update_abyss_teams()
-  return {"status": "ok"}
-
-@app.get("/cron/characters")
-async def cron_job_characters():
-  await update_character_mapping()
-  return {"status": "ok"}
-
-@app.get("/cron/versions")
-async def cron_job_versions():
+@app.get("/cron/daily")
+async def cron_jobs():
   await update_versions()
+  await update_character_mapping()
+  await update_abyss_teams()
   return {"status": "ok"}

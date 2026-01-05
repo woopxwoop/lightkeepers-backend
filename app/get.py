@@ -17,7 +17,6 @@ async def get_character_mapping() -> dict[str, str]:
   response = supabase.table("url_to_character_mapping").select("*").execute()
   
   mapping = {}
-  print(response.data)
   for row in response.data:
     mapping[row["url"]] = row["character_name"]
   

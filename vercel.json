@@ -14,7 +14,11 @@
   "crons": [
     {
       "path": "/cron/daily",
-      "schedule": "0 0 * * *"
+      "schedule": "0 0 16-17 * *"
+    },
+    {
+      "path": "/cron/daily",
+      "schedule": "0 0 1-15/4,18-31/4 * *"
     }
   ]
 }

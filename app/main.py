@@ -64,7 +64,7 @@ def get_teams_including_character(
     return data
 
 
-@app.get("/db-test-3")
+@app.post("/db-test-3")
 async def get_teams_only_including_characters(req: TeamRequest = TeamRequest()):
     wrapper = YSHelperWrapper()
 

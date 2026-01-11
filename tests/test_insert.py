@@ -1,26 +1,22 @@
-import asyncio
 import httpx
 import json
 import pytest
-from app.insert import insert_abyss_team
 from app.wrapper import YSHelperWrapper
+from app.models import AbyssTeam
+from typing import List
 
 URL = "https://api.yshelper.com/ys/getAbyssRank.php"
 
-params = {
-    "star": "all",
-    "role": "all",
-    "lang": "en",
-    "version": ""
-}
+params = {"star": "all", "role": "all", "lang": "en", "version": ""}
 
 # Minimal but safe headers
 HEADERS = {
     "User-Agent": "Mozilla/5.0",
     "Accept": "*/*",
     "Origin": "https://app.yshelper.com",
-    "Referer": "https://app.yshelper.com/"
+    "Referer": "https://app.yshelper.com/",
 }
+
 
 def fetch_abyss_rank():
     try:
@@ -39,13 +35,15 @@ def fetch_abyss_rank():
     except httpx.HTTPStatusError as e:
         print(f"Bad status code: {e.response.status_code} - {e.response.text}")
 
+
+"""
 @pytest.mark.asyncio
-async def insert_characters_abyss():
+async def test_insert_characters_abyss():
     wrapper = YSHelperWrapper()
-    characters = ["Ambor", "Kaeya"]
+    characters = await wrapper.get_character_list()
     for character in characters:
-        teams = await wrapper.get_teams(role = character)
+        teams: List[AbyssTeam] = await wrapper.get_teams(role=character)
         for team in teams:
-            insert_abyss_team(team)
-
-
+            team 
+            
+"""

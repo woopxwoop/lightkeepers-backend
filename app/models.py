@@ -15,3 +15,9 @@ class AbyssTeam(BaseModel):
     usage_rate_bottom: float | None = None
     usage_total: float | None = None
     team_key: str | None = None
+
+
+class TeamRequest(BaseModel):
+    character_names: list[str] = []
+    version: int = 53
+    num_teams: int = 100

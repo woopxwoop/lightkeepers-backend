@@ -5,7 +5,7 @@ from app.cron import (
     update_versions,
     update_teams,
 )
-from app.models import Character, AbyssTeam
+from app.models import Character, AbyssTeam, TeamRequest
 from app.wrapper import YSHelperWrapper
 from app.get import (
     get_teams_from_character,
@@ -65,14 +65,12 @@ def get_teams_including_character(
 
 
 @app.get("/db-test-3")
-async def get_teams_only_including_characters(
-    character_names: list[str] = Query(default=[]),
-    version: int = 53,
-    num_teams: int = 100,
-):
+async def get_teams_only_including_characters(req: TeamRequest = TeamRequest()):
     wrapper = YSHelperWrapper()
 
-    print(character_names)
+    character_names = req.character_names
+    version = req.version
+    num_teams = req.num_teams
 
     all_characters = list(await wrapper.get_character_list())
 

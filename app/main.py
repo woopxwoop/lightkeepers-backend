@@ -1,15 +1,19 @@
-from fastapi import FastAPI, Query
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.cron import (
     update_character_mapping,
     update_versions,
     update_teams,
+    update_top_100_abyss_teams,
 )
-from app.models import Character, AbyssTeam, TeamRequest
+from app.models import AbyssSetRequest, AbyssIncludesRequest
 from app.wrapper import YSHelperWrapper
 from app.get import (
     get_teams_from_character,
     get_teams_from_character_set,
+    get_character_mapping,
+    get_all_versions,
+    get_abyss_teams,
 )
 
 app = FastAPI(
@@ -39,46 +43,62 @@ def health_check():
     return {"status": "ok"}
 
 
-@app.get("/characters", response_model=list[Character])
-def get_characters():
-    data = []
-    return data
+@app.get("/api/versions")
+async def get_versions():
+    return get_all_versions()
 
 
-@app.get("/teams", response_model=list[AbyssTeam])
+@app.get("/api/characters")
+async def get_characters():
+    return get_character_mapping()
+
+
+@app.get("/api/abyss/top")
 async def get_teams():
-    wrapper = YSHelperWrapper()
-    data = await wrapper.get_teams()
-    return data
+    return get_abyss_teams()
 
 
-@app.get("/db-test-2")
-def get_teams_including_character(
-    character_name: str = "", version: int = 53, num_teams: int = 100
-):
-    data = get_teams_from_character(
-        character_name,
-        version,
-        num_teams,
+@app.post("/api/abyss/including")
+def get_teams_including_character(req: AbyssIncludesRequest = AbyssIncludesRequest()):
+    """Gets the most used teams given a character name where all teams includes the given character name.
+
+    Args:
+        req (AbyssSetRequest, optional): A model including a character name, a version number, and an upper bound on the number of teams returned.
+
+    Returns:
+        data: a JSON object of the list of teams
+    """
+    teams = get_teams_from_character(
+        req.character_name,
+        req.version,
+        req.num_teams,
     )
-    return data
+
+    return teams
 
 
-@app.post("/db-test-3")
-async def get_teams_only_including_characters(req: TeamRequest = TeamRequest()):
+@app.post("/api/abyss/set")
+async def get_teams_only_including_characters(req: AbyssSetRequest = AbyssSetRequest()):
+    """Gets the most used teams given a set of characters where all team compositions are a subset of the set of characters.
+
+    Args:
+        req (AbyssSetRequest, optional): A model including a list representing the set  of character names, a version number, and an upper bound on the number of teams returned.
+
+    Returns:
+        data: a JSON object of the list of teams
+    """
     wrapper = YSHelperWrapper()
 
     character_names = req.character_names
     version = req.version
     num_teams = req.num_teams
 
-    all_characters = list(await wrapper.get_character_list())
-
+    # if character_names is empty then use all characters
     if not character_names:
-        character_names = all_characters
+        character_names = list(await wrapper.get_character_list())
 
-    data = get_teams_from_character_set(character_names, version, num_teams)
-    return data
+    teams = get_teams_from_character_set(character_names, version, num_teams)
+    return teams
 
 
 @app.get("/cron/daily")
@@ -86,10 +106,5 @@ async def cron_jobs():
     await update_versions()
     await update_character_mapping()
     await update_teams()
-    return {"status": "ok"}
-
-
-@app.get("/cron/new")
-async def cron_test():
-    await update_teams()
+    await update_top_100_abyss_teams()
     return {"status": "ok"}

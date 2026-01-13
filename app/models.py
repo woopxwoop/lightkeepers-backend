@@ -17,7 +17,13 @@ class AbyssTeam(BaseModel):
     team_key: str | None = None
 
 
-class TeamRequest(BaseModel):
+class AbyssSetRequest(BaseModel):
     character_names: list[str] = []
+    version: int = 53
+    num_teams: int = 100
+
+
+class AbyssIncludesRequest(BaseModel):
+    character_name: str = ""
     version: int = 53
     num_teams: int = 100

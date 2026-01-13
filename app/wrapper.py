@@ -1,7 +1,7 @@
 import httpx
 import hashlib
 from app.models import AbyssTeam, Character
-from app.get import get_character_mapping
+from app.get import get_character_mapping_dict
 from typing import List
 
 
@@ -131,7 +131,7 @@ class YSHelperWrapper:
 
     async def get_mapping_cached(self):
         if self.character_mapping is None:
-            self.character_mapping = await get_character_mapping()
+            self.character_mapping = get_character_mapping_dict()
 
     async def get_character_list(self):
         await self.get_mapping_cached()

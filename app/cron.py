@@ -6,18 +6,24 @@ from app.insert import (
     upsert_multiple_teams,
 )
 
+from app.db import supabase
+
 from app.wrapper import YSHelperWrapper
 
 
+async def update_top_100_abyss_teams():
+    print("Updating Top 100 Teams!")
+    supabase.rpc("refresh_top_100_abyss_teams").execute()
+
+
 async def update_versions():
-    print("Updating Versions Table")
+    print("Updating Versions Table!")
 
     wrapper = YSHelperWrapper()
     mapping = await wrapper.extract_versions()
 
     for version, version_number in mapping.items():
         insert_version(version, version_number)
-    return {"message": "Cron job executed successfully"}
 
 
 async def update_character_mapping():
@@ -28,8 +34,6 @@ async def update_character_mapping():
 
     for url, character_name in mapping.items():
         insert_character_mapping(url, character_name)
-
-    return {"message": "Cron job executed successfully"}
 
 
 def chunked(iterable, size):
@@ -71,6 +75,7 @@ async def async_enumerate(aiterable, start=0):
 
 
 async def update_teams():
+    print("Updating teams!")
     wrapper = YSHelperWrapper()
     total_processed = 0
 

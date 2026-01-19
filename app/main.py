@@ -5,9 +5,10 @@ from app.cron import (
     update_versions,
     update_teams,
     update_top_100_abyss_teams,
+    update_characters,
 )
 from app.models import AbyssSetRequest, AbyssIncludesRequest
-from app.wrapper import YSHelperWrapper
+from app.dependencies import yswrapper
 from app.get import (
     get_teams_from_character,
     get_teams_from_character_set,
@@ -87,7 +88,6 @@ async def get_teams_only_including_characters(req: AbyssSetRequest = AbyssSetReq
     Returns:
         data: a JSON object of the list of teams
     """
-    wrapper = YSHelperWrapper()
 
     character_names = req.character_names
     version = req.version
@@ -95,7 +95,7 @@ async def get_teams_only_including_characters(req: AbyssSetRequest = AbyssSetReq
 
     # if character_names is empty then use all characters
     if not character_names:
-        character_names = list(await wrapper.get_character_list())
+        character_names = list(await yswrapper.get_character_list())
 
     teams = get_teams_from_character_set(character_names, version, num_teams)
     return teams
@@ -105,6 +105,17 @@ async def get_teams_only_including_characters(req: AbyssSetRequest = AbyssSetReq
 async def cron_jobs():
     await update_versions()
     await update_character_mapping()
+    await update_characters()
     await update_teams()
     await update_top_100_abyss_teams()
     return {"status": "ok"}
+
+
+@app.get("/update-teams")
+async def update_teams_job():
+    await update_teams()
+
+
+@app.get("/update-top-100-abyss-teams")
+async def update_100_teams_job():
+    await update_top_100_abyss_teams()

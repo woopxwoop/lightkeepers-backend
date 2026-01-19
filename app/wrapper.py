@@ -25,7 +25,9 @@ class YSHelperWrapper:
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
         }
 
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(
+            timeout=httpx.Timeout(connect=10.0, read=60.0, write=10.0, pool=10.0)
+        ) as client:
             response = await client.get(self.BASE_URL, params=params, headers=headers)
             response.raise_for_status()
             return response.json()
@@ -136,3 +138,11 @@ class YSHelperWrapper:
     async def get_character_list(self):
         await self.get_mapping_cached()
         return self.character_mapping.values()
+
+    async def get_characters_object_list(self):
+        data = await self.fetch_data()
+
+        return [
+            {"name": c["name"], "rarity": c["star"], "icon": c["avatar"]}
+            for c in data["has_list"]
+        ]

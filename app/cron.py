@@ -7,20 +7,31 @@ from app.insert import (
 )
 
 from app.db import supabase
+from app.dependencies import yswrapper
+import asyncio
+import httpx
 
-from app.wrapper import YSHelperWrapper
+
+async def update_characters():
+    print("Updating characters!")
+
+    characters = await yswrapper.get_characters_object_list()
+    supabase.rpc(
+        "upsert_characters",
+        {"p_characters": characters},
+    ).execute()
 
 
 async def update_top_100_abyss_teams():
     print("Updating Top 100 Teams!")
+
     supabase.rpc("refresh_top_100_abyss_teams").execute()
 
 
 async def update_versions():
     print("Updating Versions Table!")
 
-    wrapper = YSHelperWrapper()
-    mapping = await wrapper.extract_versions()
+    mapping = await yswrapper.extract_versions()
 
     for version, version_number in mapping.items():
         insert_version(version, version_number)
@@ -29,8 +40,7 @@ async def update_versions():
 async def update_character_mapping():
     print("Updating Character Mapping!")
 
-    wrapper = YSHelperWrapper()
-    mapping = await wrapper.extract_dict()
+    mapping = await yswrapper.extract_dict()
 
     for url, character_name in mapping.items():
         insert_character_mapping(url, character_name)
@@ -45,14 +55,16 @@ def chunked(iterable, size):
 BATCH_SIZE = 10
 
 
-async def generate_team_batches(wrapper: YSHelperWrapper):
+async def generate_team_batches():
     seen_team_keys = set()
     batch = []
 
-    characters = await wrapper.get_character_list()
+    characters = await yswrapper.get_character_list()
 
     for character in characters:
-        teams = await wrapper.get_teams(role=character)
+        teams = await yswrapper.get_teams(role=character)
+        await asyncio.sleep(0.3)  # 3–4 req/sec max
+
         for team in teams:
             if team.team_key in seen_team_keys:
                 continue  # skip duplicate team
@@ -76,12 +88,11 @@ async def async_enumerate(aiterable, start=0):
 
 async def update_teams():
     print("Updating teams!")
-    wrapper = YSHelperWrapper()
     total_processed = 0
 
-    async for i, batch in async_enumerate(generate_team_batches(wrapper), start=1):
+    async for i, batch in async_enumerate(generate_team_batches(), start=1):
         upsert_multiple_teams(batch)
         total_processed += len(batch)
-        # print(f"Processed batch {i}, total teams: {total_processed}")
+        print(f"Processed batch {i}, total teams: {total_processed}")
 
-    # print(f"All teams processed: {total_processed}")
+    print(f"All teams processed: {total_processed}")

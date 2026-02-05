@@ -1,11 +1,11 @@
 {
-  "builds":[
+  "builds": [
     {
       "src": "app/main.py",
       "use": "@vercel/python"
     }
   ],
-  "routes":[
+  "routes": [
     {
       "src": "/(.*)",
       "dest": "app/main.py"
@@ -13,12 +13,12 @@
   ],
   "crons": [
     {
-      "path": "/cron/daily",
-      "schedule": "0 0 16-17 * *"
+      "path": "/cron/abyss",
+      "schedule": "0 0 1-15/4,16-17,18-31/4 * *"
     },
     {
-      "path": "/cron/daily",
-      "schedule": "0 0 1-15/4,18-31/4 * *"
+      "path": "/cron/stygian",
+      "schedule": "0 0 */4 * *"
     }
   ]
 }

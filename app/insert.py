@@ -1,5 +1,5 @@
 from app.db import supabase
-from app.models import AbyssTeam, Character
+from app.models import AbyssTeam, StygianTeam, Character
 
 
 def insert_character_mapping(url: str, character_name: str):
@@ -130,3 +130,22 @@ def upsert_multiple_teams(teams: list[AbyssTeam]):
         )
 
     supabase.rpc("upsert_abyss_teams_batch", {"p_teams": payload}).execute()
+
+
+def upsert_multiple_teams_stygian(teams: list[StygianTeam]):
+    # Convert teams to JSON array for PostgreSQL
+    payload = []
+    for team in teams:
+        payload.append(
+            {
+                "team_key": team.team_key,
+                "members": [member.name for member in team.members],
+                "version_number": team.version_number,
+                "usage_rate_top": team.usage_rate_top,
+                "usage_rate_middle": team.usage_rate_middle,
+                "usage_rate_bottom": team.usage_rate_bottom,
+                "usage_total": team.usage_total,
+            }
+        )
+
+    supabase.rpc("upsert_stygian_teams_batch", {"p_teams": payload}).execute()

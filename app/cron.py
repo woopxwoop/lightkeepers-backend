@@ -4,12 +4,12 @@ from app.insert import (
     insert_character_mapping,
     insert_version,
     upsert_multiple_teams,
+    upsert_multiple_teams_stygian,
 )
 
 from app.db import supabase
-from app.dependencies import yswrapper
+from app.dependencies import yswrapper, yswrapperStygian
 import asyncio
-import httpx
 
 
 async def update_characters():
@@ -79,6 +79,30 @@ async def generate_team_batches():
         yield batch
 
 
+async def generate_team_batches_stygian():
+    seen_team_keys = set()
+    batch = []
+
+    characters = await yswrapperStygian.get_character_list()
+
+    for character in characters:
+        teams = await yswrapperStygian.get_teams(role=character)
+        await asyncio.sleep(0.3)  # 3–4 req/sec max
+
+        for team in teams:
+            if team.team_key in seen_team_keys:
+                continue  # skip duplicate team
+            seen_team_keys.add(team.team_key)
+            batch.append(team)
+
+            if len(batch) >= BATCH_SIZE:
+                yield batch
+                batch = []
+
+    if batch:  # yield remaining teams
+        yield batch
+
+
 async def async_enumerate(aiterable, start=0):
     idx = start
     async for item in aiterable:
@@ -87,11 +111,23 @@ async def async_enumerate(aiterable, start=0):
 
 
 async def update_teams():
-    print("Updating teams!")
+    print("Updating abyss teams!")
     total_processed = 0
 
     async for i, batch in async_enumerate(generate_team_batches(), start=1):
         upsert_multiple_teams(batch)
+        total_processed += len(batch)
+        print(f"Processed batch {i}, total teams: {total_processed}")
+
+    print(f"All teams processed: {total_processed}")
+
+
+async def update_teams_stygian():
+    print("Updating stygian teams!")
+    total_processed = 0
+
+    async for i, batch in async_enumerate(generate_team_batches_stygian(), start=1):
+        upsert_multiple_teams_stygian(batch)
         total_processed += len(batch)
         print(f"Processed batch {i}, total teams: {total_processed}")
 

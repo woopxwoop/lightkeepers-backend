@@ -4,6 +4,7 @@ from app.cron import (
     update_character_mapping,
     update_versions,
     update_teams,
+    update_teams_stygian,
     update_top_100_abyss_teams,
     update_characters,
 )
@@ -101,8 +102,8 @@ async def get_teams_only_including_characters(req: AbyssSetRequest = AbyssSetReq
     return teams
 
 
-@app.get("/cron/daily")
-async def cron_jobs():
+@app.get("/cron/abyss")
+async def cron_jobs_abyss():
     await update_versions()
     await update_character_mapping()
     await update_characters()
@@ -111,9 +112,20 @@ async def cron_jobs():
     return {"status": "ok"}
 
 
+@app.get("/cron/stygian")
+async def cron_jobs_stygian():
+    await update_teams_stygian_job()
+    return {"status": "ok"}
+
+
 @app.get("/update-teams")
 async def update_teams_job():
     await update_teams()
+
+
+@app.get("/update-teams-stygian")
+async def update_teams_stygian_job():
+    await update_teams_stygian()
 
 
 @app.get("/update-top-100-abyss-teams")

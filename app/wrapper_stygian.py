@@ -146,6 +146,13 @@ class YSHelperWrapperStygian:
         data = await self.fetch_data()
 
         return [
-            {"name": c["name"], "rarity": c["star"], "icon": c["avatar"]}
-            for c in data["has_list"]
+            {
+                "name": c["ename"],
+                "rarity": c["star"],
+                "icon": "https://upload-bbs.mihoyo.com/game_record/genshin/character_icon/UI_AvatarIcon_PlayerGirl.png"
+                if c["ename"] == "Traveler"
+                else c["avatar"],
+            }
+            for tier in data["result"][0]
+            for c in tier["list"]
         ]

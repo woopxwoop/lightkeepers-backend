@@ -3,6 +3,7 @@ from itertools import islice
 from app.insert import (
     insert_character_mapping,
     insert_version,
+    insert_stygian_version,
     upsert_multiple_teams,
     upsert_multiple_teams_stygian,
 )
@@ -12,7 +13,7 @@ from app.dependencies import yswrapper, yswrapperStygian
 import asyncio
 
 
-async def update_characters():
+async def update_characters_abyss():
     print("Updating characters!")
 
     characters = await yswrapper.get_characters_object_list()
@@ -20,6 +21,22 @@ async def update_characters():
         "upsert_characters",
         {"p_characters": characters},
     ).execute()
+
+    for character in characters:
+        insert_character_mapping(character["icon"], character["name"])
+
+
+async def update_characters_stygian():
+    print("Updating characters!")
+
+    characters = await yswrapperStygian.get_characters_object_list()
+    supabase.rpc(
+        "upsert_characters",
+        {"p_characters": characters},
+    ).execute()
+
+    for character in characters:
+        insert_character_mapping(character["icon"], character["name"])
 
 
 async def update_top_100_abyss_teams():
@@ -32,18 +49,13 @@ async def update_versions():
     print("Updating Versions Table!")
 
     mapping = await yswrapper.extract_versions()
+    stygian_mapping = await yswrapperStygian.extract_versions()
 
     for version, version_number in mapping.items():
         insert_version(version, version_number)
 
-
-async def update_character_mapping():
-    print("Updating Character Mapping!")
-
-    mapping = await yswrapper.extract_dict()
-
-    for url, character_name in mapping.items():
-        insert_character_mapping(url, character_name)
+    for version, version_number in stygian_mapping.items():
+        insert_stygian_version(version, version_number)
 
 
 def chunked(iterable, size):

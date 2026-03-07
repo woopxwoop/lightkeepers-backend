@@ -22,6 +22,16 @@ def insert_version(version: str, version_number: str):
     return response
 
 
+def insert_stygian_version(version: str, version_number: str):
+    response = (
+        supabase.table("stygian_versions")
+        .upsert({"version": version, "version_number": version_number})
+        .execute()
+    )
+
+    return response
+
+
 def get_or_create_character(char: Character):
     result = supabase.table("characters").select("id").eq("name", char.name).execute()
 

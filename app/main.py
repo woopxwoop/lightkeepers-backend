@@ -1,12 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.cron import (
-    update_character_mapping,
     update_versions,
     update_teams,
     update_teams_stygian,
     update_top_100_abyss_teams,
-    update_characters,
+    update_characters_abyss,
+    update_characters_stygian,
 )
 from app.models import AbyssSetRequest, AbyssIncludesRequest
 from app.dependencies import yswrapper
@@ -105,8 +105,7 @@ async def get_teams_only_including_characters(req: AbyssSetRequest = AbyssSetReq
 @app.get("/cron/abyss")
 async def cron_jobs_abyss():
     await update_versions()
-    await update_character_mapping()
-    await update_characters()
+    await update_characters_abyss()
     await update_teams()
     await update_top_100_abyss_teams()
     return {"status": "ok"}
@@ -114,7 +113,15 @@ async def cron_jobs_abyss():
 
 @app.get("/cron/stygian")
 async def cron_jobs_stygian():
+    await update_versions()
+    await update_characters_stygian()
     await update_teams_stygian_job()
+    return {"status": "ok"}
+
+
+@app.get("/cron/stygian-version")
+async def jobs_stygian():
+    await update_versions()
     return {"status": "ok"}
 
 
@@ -131,3 +138,8 @@ async def update_teams_stygian_job():
 @app.get("/update-top-100-abyss-teams")
 async def update_100_teams_job():
     await update_top_100_abyss_teams()
+
+
+@app.get("/test")
+async def test_job():
+    await update_characters_stygian()

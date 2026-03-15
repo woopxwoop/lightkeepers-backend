@@ -4,7 +4,8 @@ from app.cron import (
     update_versions,
     update_teams,
     update_teams_stygian,
-    update_top_100_abyss_teams,
+    update_abyss_views,
+    update_stygian_views,
     update_characters_abyss,
     update_characters_stygian,
 )
@@ -107,7 +108,7 @@ async def cron_jobs_abyss():
     await update_versions()
     await update_characters_abyss()
     await update_teams()
-    await update_top_100_abyss_teams()
+    await update_abyss_views()
     return {"status": "ok"}
 
 
@@ -116,6 +117,7 @@ async def cron_jobs_stygian():
     await update_versions()
     await update_characters_stygian()
     await update_teams_stygian_job()
+    await update_stygian_views()
     return {"status": "ok"}
 
 
@@ -137,7 +139,7 @@ async def update_teams_stygian_job():
 
 @app.get("/update-top-100-abyss-teams")
 async def update_100_teams_job():
-    await update_top_100_abyss_teams()
+    await update_abyss_views()
 
 
 @app.get("/test")

@@ -39,10 +39,16 @@ async def update_characters_stygian():
         insert_character_mapping(character["icon"], character["name"])
 
 
-async def update_top_100_abyss_teams():
-    print("Updating Top 100 Teams!")
+async def update_abyss_views():
+    print("Updating Abyss Views!")
 
-    supabase.rpc("refresh_top_100_abyss_teams").execute()
+    supabase.rpc("refresh_abyss_views").execute()
+
+
+async def update_stygian_views():
+    print("Updating Stygian Views!")
+
+    supabase.rpc("refresh_stygian_views").execute()
 
 
 async def update_versions():

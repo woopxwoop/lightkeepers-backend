@@ -10,12 +10,17 @@ class YSHelperWrapperStygian:
 
     character_mapping: dict[str, str] = None
 
-    def __init__(self, lang="en"):
+    def __init__(self, lang="en", version_number=None):
         self.lang = lang
-        self.version_number = 0
+        self.version_number = version_number
 
     async def fetch_data(self, star="all", role="all"):
-        params = {"star": star, "role": role, "lang": self.lang, "version": ""}
+        params = {
+            "star": star,
+            "role": role,
+            "lang": self.lang,
+            "version": self.version_number,
+        }
 
         headers = {
             "accept": "*/*",
@@ -131,7 +136,8 @@ class YSHelperWrapperStygian:
         raw_data = await self.fetch_data(role=role)
 
         # self.extract_dict(raw_data)
-        self.version_number = self.get_current_version(raw_data)
+        if self.version_number is None:
+            self.version_number = self.get_current_version(raw_data)
         return self.normalize_response(raw_data)
 
     async def get_mapping_cached(self):

@@ -14,11 +14,11 @@
   "crons": [
     {
       "path": "/cron/abyss",
-      "schedule": "0 10 1-15/4,16-17,18-31/4 * *"
+      "schedule": "6 16 1-15/4,16-17,18-31/4 * *"
     },
     {
       "path": "/cron/stygian",
-      "schedule": "0 10 */4 * *"
+      "schedule": "6 16 */4 * *"
     }
   ]
 }

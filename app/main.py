@@ -137,9 +137,14 @@ async def update_teams_stygian_job():
     await update_teams_stygian()
 
 
-@app.get("/update-top-100-abyss-teams")
-async def update_100_teams_job():
+@app.get("/update-abyss-views")
+async def update_abyss_views_job():
     await update_abyss_views()
+
+
+@app.get("/update-stygian-views")
+async def update_stygian_views_job():
+    await update_stygian_views()
 
 
 @app.get("/test")

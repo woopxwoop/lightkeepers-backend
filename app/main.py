@@ -105,7 +105,7 @@ async def get_teams_only_including_characters(req: AbyssSetRequest = AbyssSetReq
 
 @app.get("/cron/abyss")
 async def cron_jobs_abyss():
-    update_versions()
+    await update_versions()
     await update_characters_abyss()
     await update_teams()
     await update_abyss_views()
@@ -114,7 +114,7 @@ async def cron_jobs_abyss():
 
 @app.get("/cron/stygian")
 async def cron_jobs_stygian():
-    update_versions()
+    await update_versions()
     await update_characters_stygian()
     await update_teams_stygian_job()
     await update_stygian_views()

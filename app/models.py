@@ -15,6 +15,8 @@ class AbyssTeam(BaseModel):
     usage_rate_bottom: float | None = None
     usage_total: float | None = None
     team_key: str | None = None
+    has: int = -1
+    use: int = 0
 
 
 class StygianTeam(BaseModel):
@@ -25,6 +27,8 @@ class StygianTeam(BaseModel):
     usage_rate_bottom: float | None = None
     usage_total: float | None = None
     team_key: str | None = None
+    has: int = -1
+    use: int = 0
 
 
 class AbyssSetRequest(BaseModel):

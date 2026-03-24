@@ -136,6 +136,8 @@ def upsert_multiple_teams(teams: list[AbyssTeam]):
                 "usage_rate_top": team.usage_rate_top,
                 "usage_rate_bottom": team.usage_rate_bottom,
                 "usage_total": team.usage_total,
+                "use": team.use,
+                "has": team.has,
             }
         )
 
@@ -155,6 +157,8 @@ def upsert_multiple_teams_stygian(teams: list[StygianTeam]):
                 "usage_rate_middle": team.usage_rate_middle,
                 "usage_rate_bottom": team.usage_rate_bottom,
                 "usage_total": team.usage_total,
+                "use": team.use,
+                "has": team.has,
             }
         )
 

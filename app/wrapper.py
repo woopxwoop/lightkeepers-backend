@@ -81,7 +81,7 @@ class YSHelperWrapper:
             usage_rate_bottom=team.get("down_use"),
             has=team.get("has"),
             use=team.get("use"),
-            usage_total=team.get("use") / team.get("has"),
+            usage_total=team.get("use") / team.get("has") * 100,
             team_key=self.generate_team_key(members),
         )
 
